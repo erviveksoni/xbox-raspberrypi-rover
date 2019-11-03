@@ -8,7 +8,7 @@ This repo contains a set of python scripts to drive your [Adeept Mars Rover PiCa
 ![Adeept Mars Rover PiCar-B](/images/controller.jpg)
 - Pair your Xbox One Bluetooth Controller using the [xpadneo drver](https://github.com/atar-axis/xpadneo/tree/master/docs) with your Raspberry Pi (Raspbian)
 - Assembled [Adeept Mars Rover PiCar-B](https://www.adeept.com/adeept-mars-rover-picar-b-wifi-smart-robot-car-kit-for-raspberry-pi-3-model-b-b-2b-speech-recognition-opencv-target-tracking-stem-kit_p0117_s0030.html)
-![Adeept Mars Rover PiCar-B](/images/rover.jpeg)
+![Adeept Mars Rover PiCar-B](/images/rover.jpg)
 
 ## Usage
 
