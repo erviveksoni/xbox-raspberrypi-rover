@@ -1,4 +1,4 @@
-# Drive a Raspberry Pi Rover using Xbox One Controller
+# Control a Raspberry Pi Rover using Xbox One Controller
 
 This repo contains a set of python scripts to drive [Adeept Mars Rover PiCar-B](https://www.adeept.com/adeept-mars-rover-picar-b-wifi-smart-robot-car-kit-for-raspberry-pi-3-model-b-b-2b-speech-recognition-opencv-target-tracking-stem-kit_p0117_s0030.html) with an Xbox One controller (over Bluetooth).
 The application code is not tighly coupled to work only with Adeept Mars Rover and can be easily updated to drive any Raspberry Pi enabled rover.
