@@ -16,6 +16,6 @@ The application code is not tighly coupled to work only with Adeept Mars Rover a
 
 * SSH to your raspberry pi  
 * Download this Repository  
-  `git clone https://github.com/erviveksoni/xbox_controller_adeept_rover.git`
+  `git clone https://github.com/erviveksoni/xbox-raspberrypi-rover`
 * `cd xbox_controller_adeept_rover`
 * Run `sudo python3 drive_rover.py`
