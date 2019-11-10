@@ -11,7 +11,7 @@ The application code is not tighly coupled to work only with Adeept Mars Rover a
 - Setup and pair your Xbox One Bluetooth Controller using the [xpadneo driver](https://github.com/atar-axis/xpadneo/tree/master/docs) with your Raspberry Pi (Raspbian)
 - Assembled [Adeept Mars Rover PiCar-B](https://www.adeept.com/adeept-mars-rover-picar-b-wifi-smart-robot-car-kit-for-raspberry-pi-3-model-b-b-2b-speech-recognition-opencv-target-tracking-stem-kit_p0117_s0030.html)
 <br/>![Adeept Mars Rover PiCar-B](/images/rover.jpg)
-- Launch  Raspberry Pi terminal and install `sudo pip3 install python-evdev`
+- Launch  Raspberry Pi terminal and install `sudo pip3 install evdev`
 
 ## Usage
 
