@@ -2,6 +2,7 @@
 
 import asyncio
 import math
+import os
 import signal
 import sys
 import threading
@@ -16,6 +17,7 @@ import led
 import led_strip
 import motor
 import turn
+from soundplayer import SoundPlayer
 
 status     = 1          #Motor rotation
 forward    = 1          #Motor forward
@@ -200,6 +202,9 @@ if __name__ == "__main__":
             print('Please connect an Xbox controller then restart the program!')
             sys.exit()        
         
+        init_sound = SoundPlayer("soundfiles/Bleep.mp3", 2)        
+        init_sound.play(1.0)
+
         strip = led_strip.setup_led()
 
         led_threading=threading.Thread(target=led_thread)     #Define a thread for ws_2812 leds
@@ -211,12 +216,14 @@ if __name__ == "__main__":
         led.red()
         loop.run_until_complete(removetasks(loop))
         motor.destroy()
+        init_sound = SoundPlayer("soundfiles/Disconnected.mp3", 2)        
+        init_sound.play(1.0)
     except Exception as e:
         print("Error occured " + str(e))
     finally:
         if remote_control != None:
             remote_control.power_on = False
-            remote_control.erase_rumble()
+            #remote_control.erase_rumble()
         
         if(strip != None):
             led_strip.colorWipe(strip, Color(0,0,0))

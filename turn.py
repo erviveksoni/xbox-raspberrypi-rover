@@ -9,7 +9,7 @@ pwm.set_pwm_freq(60)
 MIN_PULSE_WIDTH = 650
 MAX_PULSE_WIDTH = 2350
 FREQUENCY = 60
-turn_error = 10
+turn_error = 5
 
 def turn_to_angle(angle):  
     angle = turn_error + angle
