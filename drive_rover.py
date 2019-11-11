@@ -113,7 +113,6 @@ def is_connected(): # asyncronus read-out of events
 
 def led_thread():         #WS_2812 leds
     global head_light_flag
-    siren_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/siren.mp3", card)
 
     while 1:
         if remote_control.dpad_up:
@@ -222,15 +221,17 @@ if __name__ == "__main__":
     card = 1 #(default)
     strip = None
     signals = (signal.SIGHUP, signal.SIGTERM, signal.SIGINT)
-    reverse_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/CensorBeep.mp3", card)        
-    init_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/Bleep.mp3", card)        
-    disconnect_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/Disconnected.mp3", card)        
+  
 
     for s in signals:
         loop.add_signal_handler(
             s, lambda s=s: asyncio.create_task(shutdown_signal(s, loop)))
     try:
         card = get_usb_sound_card()
+        reverse_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/CensorBeep.mp3", card)        
+        init_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/Bleep.mp3", card)        
+        disconnect_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/Disconnected.mp3", card)      
+        siren_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/siren.mp3", card)
 
         setup()
         remote_control = connect()
