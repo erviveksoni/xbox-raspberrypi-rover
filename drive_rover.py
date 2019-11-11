@@ -4,6 +4,7 @@ import asyncio
 import math
 import os
 import signal
+import subprocess
 import sys
 import threading
 import time
@@ -112,6 +113,7 @@ def is_connected(): # asyncronus read-out of events
 
 def led_thread():         #WS_2812 leds
     global head_light_flag
+    siren_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/siren.mp3", card)
 
     while 1:
         if remote_control.dpad_up:
@@ -141,8 +143,8 @@ def led_thread():         #WS_2812 leds
 async def read_gamepad_inputs():
     global head_light_flag
     print("Ready to drive!!")
-    turn_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/turn-signal.mp3", 2)
-    horn_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/Horn.mp3", 2)        
+    turn_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/turn-signal.mp3", card)
+    horn_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/Horn.mp3", card)        
 
     while is_connected() and remote_control.button_b == False:
         #print(" trigger_right = ", round(remote_control.trigger_right,2),end="\r")
@@ -203,19 +205,33 @@ async def shutdown_signal(signal, loop):
     print(f"Received exit signal {signal.name}...")
     await removetasks(loop)
 
+
+def get_usb_sound_card():
+    card = 1
+    result = subprocess.getoutput("aplay -l")
+    index = result.rfind('Set [USB Headphone Set]')
+    if index > -1:
+        result = result[0:index]
+        index = result.rfind('card ')
+        result = result[index+5:index+6]
+        card = int(result)
+    return card
+
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
+    card = 1 #(default)
     strip = None
     signals = (signal.SIGHUP, signal.SIGTERM, signal.SIGINT)
-    reverse_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/CensorBeep.mp3", 2)        
-    init_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/Bleep.mp3", 2)        
-    disconnect_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/Disconnected.mp3", 2)        
-    siren_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/siren.mp3", 2)
+    reverse_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/CensorBeep.mp3", card)        
+    init_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/Bleep.mp3", card)        
+    disconnect_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/Disconnected.mp3", card)        
 
     for s in signals:
         loop.add_signal_handler(
             s, lambda s=s: asyncio.create_task(shutdown_signal(s, loop)))
     try:
+        card = get_usb_sound_card()
+
         setup()
         remote_control = connect()
         if(remote_control == None):
