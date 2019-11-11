@@ -1,7 +1,8 @@
 # soundplayer.py
 
-import threading
 import os
+import threading
+
 
 class SoundPlayer:
     '''
@@ -26,18 +27,18 @@ class SoundPlayer:
             SoundPlayer._emit(frequencies, duration, device)
         else:
             #thread.start_new_thread(SoundPlayer._emit, (frequencies, duration, device))
-            threading.Thread(target=SoundPlayer._run,
+            threading.Thread(target=SoundPlayer._emit,
             args=(frequencies, duration, device),).start()
 
-    @staticmethod
-    def isPlaying():
-        '''
-        Checks if the sound is still playing.
-        @return: True, if the sound is playing; otherwise False
-        '''
-        info = os.popen("ps -Af").read()
-        process_count = info.count("play")
-        return process_count >= 2
+    # @staticmethod
+    # def isPlaying():
+    #     '''
+    #     Checks if the sound is still playing.
+    #     @return: True, if the sound is playing; otherwise False
+    #     '''
+    #     info = os.popen("ps -Af").read()
+    #     process_count = info.count("play")
+    #     return process_count >= 2
 
     @staticmethod
     def _emit(frequencies, duration, device):
@@ -81,7 +82,16 @@ class SoundPlayer:
             #thread.start_new_thread(SoundPlayer._run, (cmd,))
             threading.Thread(target=SoundPlayer._run,
             args=(cmd,),).start()
-        
+
+    def isPlaying(self):
+        '''
+        Checks if the sound is still playing.
+        @return: True, if the sound is playing; otherwise False
+        '''
+        info = os.popen("ps -Af").read()
+        process_count = info.count("play -v 1.0 -q " + self.audiofile)
+        return process_count >= 2
+
     @staticmethod
     def stop():
         '''
@@ -112,6 +122,3 @@ class SoundPlayer:
         #thread.start_new_thread(SoundPlayer._run, (cmd,))
         threading.Thread(target=SoundPlayer._run,
         args=(cmd,),).start()
-    
-        
-    

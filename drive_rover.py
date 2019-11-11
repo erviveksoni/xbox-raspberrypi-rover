@@ -43,15 +43,19 @@ def turn_left_led():         #Turn on the LED on the left
 def turn_right_led():        #Turn on the LED on the right
     led.turn_right(4)
 
-def drive_motor(direction, speed):
+def drive_motor(direction, speed):    
     if direction == "forward":
         motor.motor_left(status, forward,left_spd*abs(speed))
         motor.motor_right(status,backward,right_spd*abs(speed))
     elif direction == "backward":
         motor.motor_left(status, backward, left_spd*abs(speed))
         motor.motor_right(status, forward, right_spd*abs(speed))
+        if reverse_sound.isPlaying() == False:
+            reverse_sound.play()
     else:
         motor.motorStop()
+        if reverse_sound.isPlaying() == True:
+            reverse_sound.play()
 
 def get_motor_direction(x,y):
     if x == 0 and y == 0:
@@ -108,10 +112,13 @@ def is_connected(): # asyncronus read-out of events
 
 def led_thread():         #WS_2812 leds
     global head_light_flag
+
     while 1:
         if remote_control.dpad_up:
+            siren_sound.play(1.0)
             led.police(4)
             time.sleep(0.1)
+            siren_sound.stop()
         elif remote_control.dpad_right:
             led_strip.rainbowCycle(strip)
             time.sleep(0.1)
@@ -134,6 +141,9 @@ def led_thread():         #WS_2812 leds
 async def read_gamepad_inputs():
     global head_light_flag
     print("Ready to drive!!")
+    turn_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/turn-signal.mp3", 2)
+    horn_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/Horn.mp3", 2)        
+
     while is_connected() and remote_control.button_b == False:
         #print(" trigger_right = ", round(remote_control.trigger_right,2),end="\r")
         x = round(remote_control.joystick_left_x,2)
@@ -148,12 +158,15 @@ async def read_gamepad_inputs():
         drive_motor(direction,y)
 
         if round(remote_control.trigger_right,2) > 0.0:
+            horn_sound.play(1.0)
             led.blue()
         elif round(remote_control.trigger_left,2) > 0.0:
             led.cyan()
         elif remote_control.bump_left:
+            turn_sound.play(1.0)
             led.turn_left(5)
         elif remote_control.bump_right:
+            turn_sound.play(1.0)
             led.turn_right(5)
         elif remote_control.dpad_up:
             remote_control.dpad_up = False
@@ -166,6 +179,8 @@ async def read_gamepad_inputs():
         elif head_light_flag == False:
             led.both_off()
             led_strip.colorWipe(strip, Color(0,0,0))
+            if turn_sound.isPlaying():
+                turn_sound.stop()
 
         await asyncio.sleep(100e-3) #100ms
     return
@@ -192,6 +207,11 @@ if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     strip = None
     signals = (signal.SIGHUP, signal.SIGTERM, signal.SIGINT)
+    reverse_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/CensorBeep.mp3", 2)        
+    init_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/Bleep.mp3", 2)        
+    disconnect_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/Disconnected.mp3", 2)        
+    siren_sound = SoundPlayer("/home/pi/xbox-raspberrypi-rover/soundfiles/siren.mp3", 2)
+
     for s in signals:
         loop.add_signal_handler(
             s, lambda s=s: asyncio.create_task(shutdown_signal(s, loop)))
@@ -202,7 +222,6 @@ if __name__ == "__main__":
             print('Please connect an Xbox controller then restart the program!')
             sys.exit()        
         
-        init_sound = SoundPlayer("soundfiles/Bleep.mp3", 2)        
         init_sound.play(1.0)
 
         strip = led_strip.setup_led()
@@ -216,8 +235,7 @@ if __name__ == "__main__":
         led.red()
         loop.run_until_complete(removetasks(loop))
         motor.destroy()
-        init_sound = SoundPlayer("soundfiles/Disconnected.mp3", 2)        
-        init_sound.play(1.0)
+        disconnect_sound.play(1.0)
     except Exception as e:
         print("Error occured " + str(e))
     finally:
