@@ -16,7 +16,7 @@ def turn_to_angle(angle):
     pwm.set_pwm(2, 0, pulseWidth(angle))
 
 def turn_middle():
-    angle = turn_error + 90
+    angle =  90
     turn_to_angle(angle)
 
 def map(x, in_min, in_max, out_min, out_max):
