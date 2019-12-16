@@ -13,6 +13,19 @@ The application code is not tighly coupled to work only with Adeept Mars Rover a
 <br/>![Adeept Mars Rover PiCar-B](/images/rover.jpg)
 - Launch  Raspberry Pi terminal and install `sudo pip3 install evdev`
 
+## Adding Sound Effects
+The Adeept rover comes with Adafruit NeoPixel LED strip which can be used to create exciting light effects. The LED strip uses the NeoPixel library to make this work. I have realised that using this library interferes with the Raspberry Pi onboard USB and Bluetooth sound drivers. So in case you want to play some sound effects from the Raspberry then expect to hear a choppy playback.    
+
+To workaround this, I added an external USB sound card which outputs to an 3.5mm jack connected to a small speaker. 
+<br/>![USB Sound Card](/images/sound_card.jpg)
+
+So that's on the hardware side.. Now to make it all work, I used the [SoX (Sound eXchange) python library](http://www.python-exemplary.com/index_en.php?inhalt_links=navigation_en.inc.php&inhalt_mitte=raspi/en/sound.inc.php) which can change the sound card on-the-fly and outputs the effect through the desired channel. . 
+The implementation for the sound effects is done in the [Soundfile.py](https://github.com/erviveksoni/xbox-raspberrypi-rover/blob/master/soundplayer.py)
+
+You'll need to install these packages to enable the sound effects in the code base:
+`sudo apt-get install sox libsox-fmt-mp3 mp3`
+
+
 ## Usage
 
 * SSH to your raspberry pi  
